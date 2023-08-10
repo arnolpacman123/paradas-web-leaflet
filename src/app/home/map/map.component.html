@@ -1,11 +1,11 @@
 <div
-    leaflet
-    [leafletOptions]="options"
-    [leafletLayersControl]="layersControl"
-    style="height: calc(100% - 120px); width: 100%;"
-    (leafletDoubleClick)="onDblClickPutMarker($event)"
-    (leafletMapReady)="onMapReady($event)"
+  id="map"
+  leaflet
+  [leafletOptions]="options"
+  [leafletLayersControl]="layersControl"
+  style="height: calc(100% - 120px); width: 100%;"
+  (leafletMapReady)="onMapReady($event)"
+  (leafletDoubleClick)="onDblClickPutMarker($event)"
 >
-<!--    <div *ngIf="myLocation" [leafletLayer]="myLocation"></div>-->
-    <div *ngIf="destination" [leafletLayer]="destination"></div>
+  <div *ngIf="destination" [leafletLayer]="destination"></div>
 </div>

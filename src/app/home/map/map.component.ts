@@ -27,7 +27,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       L.latLng(-18.4834, -62.1821),
       L.latLng(-17.0834, -64.0821),
     ),
-    minZoom: 10,
+    minZoom: 9,
     zoomAnimation: true,
   };
 
@@ -57,108 +57,87 @@ export class MapComponent implements OnInit, AfterViewInit {
   map!: L.Map;
 
   ngOnInit(): void {
-    // this.getMyLocation();
   }
-
 
   ngAfterViewInit(): void {
-  }
-
-  getMyLocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.watchPosition((position) => {
-        if (this.myLocation) {
-          this.myLocation.remove();
-        }
-        this.myLocation = L.marker([ position.coords.latitude, position.coords.longitude ], {
-          icon: L.icon({
-            iconSize: [ 32, 32 ],
-            iconUrl: 'assets/images/blue-dot.png',
-          }),
-          draggable: false,
-        });
-      });
-    } else {
-      alert('No se puede obtener la ubicación actual del usuario');
-    }
   }
 
   onDblClickPutMarker($event: L.LeafletMouseEvent) {
     if (this.destination) {
       this.destination.setLatLng($event.latlng);
-      if (this.myLocation && this.routingControl) {
-        this.routingControl.setWaypoints([
-          L.latLng(this.myLocation.getLatLng().lat, this.myLocation.getLatLng().lng),
-          L.latLng(this.destination.getLatLng().lat, this.destination.getLatLng().lng),
-        ]);
-      }
-      return;
-    }
-    this.destination = L.marker($event.latlng, {
-      icon: L.icon({
-        iconSize: [ 21, 33 ],
-        iconUrl: 'assets/images/marker-icon.png',
-      }),
-      draggable: true,
-    });
-
-    if (this.myLocation && this.routingControl) {
-      this.routingControl.setWaypoints([
-        L.latLng(this.myLocation.getLatLng().lat, this.myLocation.getLatLng().lng),
-        L.latLng(this.destination.getLatLng().lat, this.destination.getLatLng().lng),
-      ]);
     } else {
-      this.assignRoutingControl();
-      this.map.addControl(this.routingControl);
+      this.destination = L.marker($event.latlng, {
+        icon: L.icon({
+          iconSize: [ 21, 33 ],
+          iconUrl: 'assets/images/marker-icon.png',
+        }),
+        draggable: true,
+      });
+    }
+
+    if (this.myLocation) {
+      this.showRoutingControl();
     }
 
     this.destination.on('dblclick', () => {
-      this.destination.remove();
       this.destination = undefined!;
+      if (this.routingControl) {
+        this.map.removeControl(this.routingControl);
+      }
+      this.routingControl = undefined!;
     });
+
+  }
+
+  showRoutingControl() {
+    if (this.routingControl) {
+      const latLngMyLocation = this.myLocation.getLatLng();
+      const latLngDestination = this.destination.getLatLng();
+      this.routingControl.setWaypoints([
+        L.latLng(latLngMyLocation.lat, latLngMyLocation.lng),
+        L.latLng(latLngDestination.lat, latLngDestination.lng),
+      ]);
+    } else {
+      this.assignRoutingControl();
+      (this.routingControl as L.Routing.Control).on('routesfound', (e) => {
+      });
+      this.map.addControl(this.routingControl);
+    }
   }
 
   assignRoutingControl() {
-    if (this.routingControl) {
-      this.routingControl.setWaypoints([
+    this.routingControl = L.Routing.control({
+      router: L.Routing.osrmv1({
+        language: 'es',
+      }),
+      plan: L.Routing.plan([
         L.latLng(this.myLocation.getLatLng().lat, this.myLocation.getLatLng().lng),
         L.latLng(this.destination.getLatLng().lat, this.destination.getLatLng().lng),
-      ]);
-      return;
-    } else {
-      this.routingControl = L.Routing.control({
-        router: L.Routing.osrmv1({
-          language: 'es',
-        }),
-        plan: L.Routing.plan([
-          L.latLng(this.myLocation.getLatLng().lat, this.myLocation.getLatLng().lng),
-          L.latLng(this.destination.getLatLng().lat, this.destination.getLatLng().lng),
-        ], {
-          createMarker: (waypointIndex, _, __) => {
-            if (waypointIndex === 0) {
-              return this.myLocation;
-            } else {
-              return this.destination;
-            }
-          },
-        }),
-        routeWhileDragging: true,
-        altLineOptions: {
-          styles: [
-            { color: '#EE675C', weight: 5 },
-          ],
-          extendToWaypoints: true,
-          missingRouteTolerance: 100,
+      ], {
+        createMarker: (waypointIndex, _, __) => {
+          if (waypointIndex === 1) {
+            return this.destination;
+          } else {
+            return false;
+          }
         },
-        lineOptions: {
-          styles: [
-            { color: '#EE675C', weight: 5 },
-          ],
-          extendToWaypoints: true,
-          missingRouteTolerance: 100,
-        },
-      });
-    }
+      }),
+      routeWhileDragging: true,
+      altLineOptions: {
+        styles: [
+          { color: '#EE675C', weight: 5 },
+        ],
+        extendToWaypoints: true,
+        missingRouteTolerance: 100,
+      },
+      lineOptions: {
+        styles: [
+          { color: '#EE675C', weight: 5 },
+        ],
+        extendToWaypoints: true,
+        missingRouteTolerance: 100,
+      },
+    });
   }
 
   assignLocationControl() {
@@ -171,8 +150,6 @@ export class MapComponent implements OnInit, AfterViewInit {
         enableHighAccuracy: true,
         watch: true,
       },
-      iconLoading: 'fa fa-spinner fa-spin',
-      iconElementTag: 'a',
       keepCurrentZoomLevel: true,
       flyTo: true,
       cacheLocation: true,
@@ -181,15 +158,16 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   onLocationFound(e: L.LocationEvent) {
     if (this.myLocation) {
-      this.myLocation.remove();
+      this.myLocation.setLatLng(e.latlng);
+    } else {
+      this.myLocation = L.marker(e.latlng, {
+        icon: L.icon({
+          iconSize: [ 21, 33 ],
+          iconUrl: 'assets/images/marker-icon.png',
+        }),
+        draggable: true,
+      });
     }
-    this.myLocation = L.marker(e.latlng, {
-      icon: L.icon({
-        iconSize: [ 32, 32 ],
-        iconUrl: 'assets/images/blue-dot.png',
-      }),
-      draggable: false,
-    });
   }
 
   assignSearchControl() {
@@ -215,9 +193,8 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   onGeosearchShowLocation(e: L.LeafletEvent) {
     this.destination = (e as any).marker;
-    if (this.myLocation && this.destination) {
-      this.assignRoutingControl();
-      this.map.addControl(this.routingControl);
+    if (this.myLocation) {
+      this.showRoutingControl();
     }
   }
 
