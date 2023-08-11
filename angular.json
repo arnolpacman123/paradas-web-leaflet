@@ -31,6 +31,7 @@
               "./node_modules/leaflet-routing-machine/dist/leaflet-routing-machine.css",
               "./node_modules/leaflet-geosearch/dist/geosearch.css",
               "./node_modules/leaflet.locatecontrol/dist/L.Control.Locate.min.css",
+              "./node_modules/leaflet-sidebar-v2/css/leaflet-sidebar.min.css",
               "src/styles.css"
             ],
             "scripts": [
@@ -71,10 +72,12 @@
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true
+              "namedChunks": true,
+              "fileReplacements": [
+              ]
             }
           },
-          "defaultConfiguration": "production",
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",

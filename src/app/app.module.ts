@@ -9,19 +9,23 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LeafletModule } from "@asymmetrik/ngx-leaflet";
 import { HeaderComponent } from './home/header/header.component';
 import { NgOptimizedImage } from "@angular/common";
+import { HttpClientModule } from "@angular/common/http";
+import { SidebarComponent } from './home/sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     MapComponent,
-    HeaderComponent
+    HeaderComponent,
+    SidebarComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     LeafletModule,
+    HttpClientModule,
     NgOptimizedImage
   ],
   providers: [],

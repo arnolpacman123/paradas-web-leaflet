@@ -1,0 +1,33 @@
+<div id="sidebar" class="leaflet-sidebar collapsed">
+  <!-- Nav tabs -->
+  <div class="leaflet-sidebar-tabs">
+    <ul role="tablist"> <!-- top aligned tabs -->
+      <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
+    </ul>
+  </div>
+
+  <!-- Tab panes -->
+  <div class="leaflet-sidebar-content">
+    <div class="leaflet-sidebar-pane" id="home">
+      <h1 class="text-center">
+        Líneas de micros
+      </h1>
+      <div class="list-group">
+        <div
+          *ngFor="let line of lines"
+          class="list-group-item"
+        >
+          <div>
+            <h3 class="list-group-item-heading text-center">
+              Línea {{ line.name }}
+            </h3>
+            <div class="logo-container">
+              <img [src]="getImageUrl(line.name!)" alt="Línea {{ line.name }}" height="100%" width="100%"
+                   class="logo-micro"/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

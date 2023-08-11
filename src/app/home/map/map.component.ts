@@ -2,8 +2,11 @@ import { AfterViewInit, Component, OnInit } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
 import 'leaflet.locatecontrol';
+import 'leaflet-sidebar-v2';
 import { LeafletControlLayersConfig } from "@asymmetrik/ngx-leaflet";
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
+import { MapService } from "@services/map.service";
+import { LineNameI } from "@models/interfaces";
 
 @Component({
   selector: 'app-map',
@@ -48,15 +51,28 @@ export class MapComponent implements OnInit, AfterViewInit {
     overlays: {},
   };
 
+  lines: LineNameI[] = [];
+
   destination!: L.Marker;
   myLocation!: L.Marker;
   // @ts-ignore
   searchControl!: SearchControl;
   routingControl!: L.Routing.Control;
   locateControl!: L.Control.Locate;
+  sidebarControl!: L.Control.Sidebar;
   map!: L.Map;
 
+  constructor(
+    private readonly mapService: MapService,
+  ) {
+  }
+
   ngOnInit(): void {
+    this.mapService.getLinesNames().subscribe({
+      next: (response) => {
+        this.lines = response;
+      },
+    });
   }
 
   ngAfterViewInit(): void {
@@ -82,6 +98,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.destination.on('dblclick', () => {
       this.destination = undefined!;
       if (this.routingControl) {
+        this.map.removeEventListener('routesfound');
         this.map.removeControl(this.routingControl);
       }
       this.routingControl = undefined!;
@@ -100,6 +117,13 @@ export class MapComponent implements OnInit, AfterViewInit {
     } else {
       this.assignRoutingControl();
       (this.routingControl as L.Routing.Control).on('routesfound', (e) => {
+        e.routes.forEach((route: any) => {
+          const string = 'LINESTRING(' + route.coordinates.map((coordinate: any) => {
+            return coordinate.lng + ' ' + coordinate.lat;
+          }) + ')';
+          this.mapService.compareLinestrings(string).subscribe((response: any) => {
+          });
+        });
       });
       this.map.addControl(this.routingControl);
     }
@@ -200,6 +224,13 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   async onMapReady($event: L.Map) {
     this.map = $event;
+    this.sidebarControl = L.control.sidebar({
+      closeButton: true,
+      position: 'left',
+      container: 'sidebar',
+      autopan: false,
+    });
+    this.map.addControl(this.sidebarControl);
     this.assignLocationControl();
     this.map.addControl(this.locateControl);
     this.map.on('locationfound', this.onLocationFound.bind(this));
@@ -214,5 +245,10 @@ export class MapComponent implements OnInit, AfterViewInit {
       this.myLocation.remove();
       this.myLocation = undefined!;
     }
+  }
+
+  getImageUrl(name: string) {
+    const lineString = `LINEA ${ name }`.replaceAll(' ', '+');
+    return `https://imagenes-micros.s3.amazonaws.com/${ lineString }.jpg`;
   }
 }
