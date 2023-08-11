@@ -246,9 +246,4 @@ export class MapComponent implements OnInit, AfterViewInit {
       this.myLocation = undefined!;
     }
   }
-
-  getImageUrl(name: string) {
-    const lineString = `LINEA ${ name }`.replaceAll(' ', '+');
-    return `https://imagenes-micros.s3.amazonaws.com/${ lineString }.jpg`;
-  }
 }
