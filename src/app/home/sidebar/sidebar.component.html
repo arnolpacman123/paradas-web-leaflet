@@ -6,12 +6,11 @@
     </ul>
   </div>
 
-  <!-- Tab panes -->
   <div class="leaflet-sidebar-content">
     <div class="leaflet-sidebar-pane" id="home">
-      <h1 class="text-center">
+      <h2 class="text-center mt-2">
         Líneas de micros
-      </h1>
+      </h2>
       <div class="list-group">
         <div
           *ngFor="let line of lines"
@@ -19,7 +18,7 @@
         >
           <div>
             <h2 class="list-group-item-heading text-center">
-              Línea {{ line.name }}
+              {{ line.name }}
             </h2>
             <div class="logo-container">
               <img [src]="getImageUrl(line.name!)" alt="Línea {{ line.name }}" height="100%" width="100%"

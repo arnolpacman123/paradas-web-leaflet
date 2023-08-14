@@ -209,7 +209,6 @@ export class MapComponent implements OnInit, AfterViewInit {
         }),
         draggable: true,
       },
-      style: 'bar',
       notFoundMessage: 'No se encontraron resultados',
       searchLabel: 'Ingresa el destino',
     });
