@@ -161,6 +161,8 @@ export class MapComponent implements OnInit, AfterViewInit {
         extendToWaypoints: true,
         missingRouteTolerance: 100,
       },
+      collapsible: true,
+      show: false,
     });
   }
 
