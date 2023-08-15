@@ -52,7 +52,6 @@ export class MapComponent implements OnInit, AfterViewInit {
   };
 
   lines: LineNameI[] = [];
-
   destination!: L.Marker;
   myLocation!: L.Marker;
   // @ts-ignore
@@ -60,6 +59,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   routingControl!: L.Routing.Control;
   locateControl!: L.Control.Locate;
   sidebarControl!: L.Control.Sidebar;
+  lineRoutesSelected: L.Polyline[] = [];
   map!: L.Map;
 
   constructor(
@@ -68,7 +68,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.mapService.getLinesNames().subscribe({
+    this.mapService.findAllLinesNames().subscribe({
       next: (response) => {
         this.lines = response;
       },
@@ -118,11 +118,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       this.assignRoutingControl();
       (this.routingControl as L.Routing.Control).on('routesfound', (e) => {
         e.routes.forEach((route: any) => {
-          const string = 'LINESTRING(' + route.coordinates.map((coordinate: any) => {
-            return coordinate.lng + ' ' + coordinate.lat;
-          }) + ')';
-          this.mapService.compareLinestrings(string).subscribe((response: any) => {
-          });
+          const coordinates = route.coordinates.map((coordinate: any) => [ coordinate.lng, coordinate.lat ]);
         });
       });
       this.map.addControl(this.routingControl);
@@ -216,6 +212,15 @@ export class MapComponent implements OnInit, AfterViewInit {
     });
   }
 
+  assignSidebarControl() {
+    this.sidebarControl = L.control.sidebar({
+      closeButton: true,
+      position: 'left',
+      container: 'sidebar',
+      autopan: false,
+    });
+  }
+
   onGeosearchShowLocation(e: L.LeafletEvent) {
     this.destination = (e as any).marker;
     if (this.myLocation) {
@@ -225,12 +230,7 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   async onMapReady($event: L.Map) {
     this.map = $event;
-    this.sidebarControl = L.control.sidebar({
-      closeButton: true,
-      position: 'left',
-      container: 'sidebar',
-      autopan: false,
-    });
+    this.assignSidebarControl();
     this.map.addControl(this.sidebarControl);
     this.assignLocationControl();
     this.map.addControl(this.locateControl);
@@ -246,5 +246,23 @@ export class MapComponent implements OnInit, AfterViewInit {
       this.myLocation.remove();
       this.myLocation = undefined!;
     }
+  }
+
+  lineSelected($event: LineNameI) {
+    this.lineRoutesSelected = [];
+    this.mapService.findLineRoutesByName($event.name!).subscribe({
+      next: (response) => {
+        response.forEach((lineRoute) => {
+          const coordinates = lineRoute.geom.coordinates.map((coordinate: any) => [ coordinate[1], coordinate[0] ]);
+          this.lineRoutesSelected.push(L.polyline(coordinates, {
+            color: '#EE675C',
+            weight: 5,
+          }));
+        });
+        this.lineRoutesSelected.forEach((lineRoute) => {
+          this.map.addLayer(lineRoute);
+        });
+      },
+    });
   }
 }

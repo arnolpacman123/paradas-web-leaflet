@@ -8,6 +8,7 @@
   (leafletDoubleClick)="onDblClickPutMarker($event)"
 >
   <div *ngIf="destination" [leafletLayer]="destination"></div>
+  <div *ngFor="let lineRoute of lineRoutesSelected" [leafletLayer]="lineRoute"></div>
 </div>
 
-<app-sidebar [lines]="lines"></app-sidebar>
+<app-sidebar [lines]="lines" [result]="lines" (lineSelected)="lineSelected($event)"></app-sidebar>

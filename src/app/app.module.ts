@@ -11,6 +11,9 @@ import { HeaderComponent } from './home/header/header.component';
 import { NgOptimizedImage } from "@angular/common";
 import { HttpClientModule } from "@angular/common/http";
 import { SidebarComponent } from './home/sidebar/sidebar.component';
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { FormsModule } from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -26,7 +29,10 @@ import { SidebarComponent } from './home/sidebar/sidebar.component';
     BrowserAnimationsModule,
     LeafletModule,
     HttpClientModule,
-    NgOptimizedImage
+    NgOptimizedImage,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

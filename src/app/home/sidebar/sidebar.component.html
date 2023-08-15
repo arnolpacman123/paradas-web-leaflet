@@ -1,19 +1,29 @@
 <div id="sidebar" class="leaflet-sidebar collapsed">
-  <!-- Nav tabs -->
   <div class="leaflet-sidebar-tabs">
-    <ul role="tablist"> <!-- top aligned tabs -->
-      <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
+    <ul role="tablist">
+      <li><a href="#lines" role="tab"><i class="fa fa-bars"></i></a></li>
     </ul>
   </div>
 
   <div class="leaflet-sidebar-content">
-    <div class="leaflet-sidebar-pane" id="home">
+    <div class="leaflet-sidebar-pane" id="lines">
       <h2 class="text-center mt-2">
         Líneas de micros
       </h2>
+      <div class="text-center row">
+        <mat-form-field appearance="outline">
+          <input
+            matInput
+            [(ngModel)]="searchText"
+            placeholder="Buscar línea"
+            autocomplete="off"
+            (input)="onSearchText()"
+          />
+        </mat-form-field>
+      </div>
       <div class="list-group">
         <div
-          *ngFor="let line of lines"
+          *ngFor="let line of result"
           class="list-group-item"
         >
           <div>
@@ -23,6 +33,20 @@
             <div class="logo-container">
               <img [src]="getImageUrl(line.name!)" alt="Línea {{ line.name }}" height="100%" width="100%"
                    class="logo-micro"/>
+            </div>
+            <div class="text-center my-3">
+              <button
+                class="btn btn-danger btn-block mx-1 my-1"
+                (click)="onLineSelected(line)"
+              >
+                Ver recorrido
+              </button>
+              <button
+                class="btn btn-primary btn-block mx-1 my-1"
+                (click)="onLineInfoSelected(line)"
+              >
+                Ver información
+              </button>
             </div>
           </div>
         </div>
