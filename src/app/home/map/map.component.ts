@@ -217,7 +217,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       closeButton: true,
       position: 'left',
       container: 'sidebar',
-      autopan: false,
+      autopan: true,
     });
   }
 
@@ -262,6 +262,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         this.lineRoutesSelected.forEach((lineRoute) => {
           this.map.addLayer(lineRoute);
         });
+        this.sidebarControl.close();
       },
     });
   }
