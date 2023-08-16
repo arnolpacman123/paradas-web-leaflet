@@ -11,6 +11,6 @@ export interface GeomI {
   coordinates: Array<[ number, number ]>;
 }
 
-export interface CompareLinestrings {
+export interface FindBestLineRoute {
   coordinates: Array<[ number, number ]>;
 }

@@ -119,6 +119,11 @@ export class MapComponent implements OnInit, AfterViewInit {
       (this.routingControl as L.Routing.Control).on('routesfound', (e) => {
         e.routes.forEach((route: any) => {
           const coordinates = route.coordinates.map((coordinate: any) => [ coordinate.lng, coordinate.lat ]);
+          this.mapService.findBestLineRoute({ coordinates }).subscribe({
+            next: (response) => {
+              console.log(response);
+            },
+          });
         });
       });
       this.map.addControl(this.routingControl);
@@ -255,7 +260,6 @@ export class MapComponent implements OnInit, AfterViewInit {
         response.forEach((lineRoute) => {
           const coordinates = lineRoute.geom.coordinates.map((coordinate: any) => [ coordinate[1], coordinate[0] ]);
           this.lineRoutesSelected.push(L.polyline(coordinates, {
-            color: '#EE675C',
             weight: 5,
           }));
         });

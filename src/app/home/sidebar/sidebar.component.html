@@ -2,13 +2,14 @@
   <div class="leaflet-sidebar-tabs">
     <ul role="tablist">
       <li><a href="#lines" role="tab"><i class="fa fa-bars"></i></a></li>
+      <li><a href="#lines-nearest" role="tab"><i class="fa fa-map-marker"></i></a></li>
     </ul>
   </div>
 
   <div class="leaflet-sidebar-content">
     <div class="leaflet-sidebar-pane" id="lines">
       <h2 class="text-center mt-2">
-        Líneas de micros
+        Líneas de Micros
       </h2>
       <div class="text-center row">
         <mat-form-field appearance="outline">
@@ -27,9 +28,9 @@
           class="list-group-item"
         >
           <div>
-            <h2 class="list-group-item-heading text-center">
+            <h3 class="list-group-item-heading text-center h1">
               {{ line.name }}
-            </h2>
+            </h3>
             <div class="logo-container">
               <img [src]="getImageUrl(line.name!)" alt="Línea {{ line.name }}" height="100%" width="100%"
                    class="logo-micro"/>
@@ -42,7 +43,7 @@
                 Ver recorrido
               </button>
               <button
-                class="btn btn-primary btn-block mx-1 my-1"
+                class="btn btn-secondary btn-block mx-1 my-1"
                 (click)="onLineInfoSelected(line)"
               >
                 Ver información
@@ -51,6 +52,12 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="leaflet-sidebar-pane" id="lines-nearest">
+      <h2 class="text-center mt-2">
+        Línea cerca de mí
+      </h2>
     </div>
   </div>
 </div>
