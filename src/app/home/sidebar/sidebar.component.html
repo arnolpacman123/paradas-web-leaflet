@@ -22,42 +22,40 @@
           />
         </mat-form-field>
       </div>
-      <div class="list-group">
-        <div
-          *ngFor="let line of result"
-          class="list-group-item"
-        >
-          <div>
-            <h3 class="list-group-item-heading text-center h1">
-              {{ line.name }}
-            </h3>
-            <div class="logo-container">
-              <img [src]="getImageUrl(line.name!)" alt="Línea {{ line.name }}" height="100%" width="100%"
-                   class="logo-micro"/>
-            </div>
-            <div class="text-center my-3">
-              <button
-                class="btn btn-danger btn-block mx-1 my-1"
-                (click)="onLineSelected(line)"
-              >
-                Ver recorrido
-              </button>
-              <button
-                class="btn btn-secondary btn-block mx-1 my-1"
-                (click)="onLineInfoSelected(line)"
-              >
-                Ver información
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <app-lines-list [linesNames]="result" (lineSelected)="onLineSelected($event)"></app-lines-list>
     </div>
 
     <div class="leaflet-sidebar-pane" id="lines-nearest">
       <h2 class="text-center mt-2">
         Línea cerca de mí
       </h2>
+      <div class="text-center">
+        <ng-container *ngIf="myLocation; else notMyLocation">
+          <ng-container
+            *ngIf="!loadingNearestLines; else loadingNearestLinesH"
+          >
+            <button
+              class="btn btn-primary btn-block mx-1 mb-4"
+              (click)="showNearestLinesRoutes()"
+            >
+              Ver líneas cerca de mí
+            </button>
+            <app-lines-list [linesNames]="linesNearest" (lineSelected)="onLineSelected($event)"></app-lines-list>
+          </ng-container>
+          <ng-template #loadingNearestLinesH>
+            <div class="d-flex justify-content-center">
+              <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Cargando...</span>
+              </div>
+            </div>
+          </ng-template>
+        </ng-container>
+        <ng-template #notMyLocation>
+          <div class="alert alert-danger">
+            Active su ubicación primero...
+          </div>
+        </ng-template>
+      </div>
     </div>
   </div>
 </div>

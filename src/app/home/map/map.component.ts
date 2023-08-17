@@ -1,17 +1,18 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
 import 'leaflet.locatecontrol';
 import 'leaflet-sidebar-v2';
-import { LeafletControlLayersConfig } from "@asymmetrik/ngx-leaflet";
-import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
-import { MapService } from "@services/map.service";
-import { LineNameI } from "@models/interfaces";
+import {LeafletControlLayersConfig} from "@asymmetrik/ngx-leaflet";
+import {GeoSearchControl, OpenStreetMapProvider} from 'leaflet-geosearch';
+import {MapService} from "@services/map.service";
+import {LineNameI} from "@models/interfaces";
+import {SidebarComponent} from "../sidebar/sidebar.component";
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
-  styleUrls: [ './map.component.css' ]
+  styleUrls: ['./map.component.css']
 })
 export class MapComponent implements OnInit, AfterViewInit {
   options: L.MapOptions = {
@@ -20,7 +21,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     layers: [
       L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
         maxZoom: 20,
-        subdomains: [ 'mt0', 'mt1', 'mt2', 'mt3' ],
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
       }),
     ],
     doubleClickZoom: false,
@@ -30,7 +31,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       L.latLng(-18.4834, -62.1821),
       L.latLng(-17.0834, -64.0821),
     ),
-    minZoom: 9,
+    minZoom: 9.5,
     zoomAnimation: true,
   };
 
@@ -38,11 +39,11 @@ export class MapComponent implements OnInit, AfterViewInit {
     baseLayers: {
       'Google Maps': L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
         maxZoom: 22,
-        subdomains: [ 'mt0', 'mt1', 'mt2', 'mt3' ],
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
       }),
       'Google Satellite': L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
         maxZoom: 22,
-        subdomains: [ 'mt0', 'mt1', 'mt2', 'mt3' ],
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
       }),
       'Open Street Map': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 20,
@@ -60,7 +61,9 @@ export class MapComponent implements OnInit, AfterViewInit {
   locateControl!: L.Control.Locate;
   sidebarControl!: L.Control.Sidebar;
   lineRoutesSelected: L.Polyline[] = [];
+  nearestLinesRoutes: L.Polyline[] = [];
   map!: L.Map;
+  @ViewChild('sidebar', {static: false}) sidebar!: SidebarComponent;
 
   constructor(
     private readonly mapService: MapService,
@@ -84,7 +87,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     } else {
       this.destination = L.marker($event.latlng, {
         icon: L.icon({
-          iconSize: [ 21, 33 ],
+          iconSize: [21, 33],
           iconUrl: 'assets/images/marker-icon.png',
         }),
         draggable: true,
@@ -118,8 +121,8 @@ export class MapComponent implements OnInit, AfterViewInit {
       this.assignRoutingControl();
       (this.routingControl as L.Routing.Control).on('routesfound', (e) => {
         e.routes.forEach((route: any) => {
-          const coordinates = route.coordinates.map((coordinate: any) => [ coordinate.lng, coordinate.lat ]);
-          this.mapService.findBestLineRoute({ coordinates }).subscribe({
+          const coordinates = route.coordinates.map((coordinate: any) => [coordinate.lng, coordinate.lat]);
+          this.mapService.findBestLineRoute({coordinates}).subscribe({
             next: (response) => {
               console.log(response);
             },
@@ -150,14 +153,14 @@ export class MapComponent implements OnInit, AfterViewInit {
       routeWhileDragging: true,
       altLineOptions: {
         styles: [
-          { color: '#EE675C', weight: 5 },
+          {color: '#EE675C', weight: 5},
         ],
         extendToWaypoints: true,
         missingRouteTolerance: 100,
       },
       lineOptions: {
         styles: [
-          { color: '#EE675C', weight: 5 },
+          {color: '#EE675C', weight: 5},
         ],
         extendToWaypoints: true,
         missingRouteTolerance: 100,
@@ -189,7 +192,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     } else {
       this.myLocation = L.marker(e.latlng, {
         icon: L.icon({
-          iconSize: [ 21, 33 ],
+          iconSize: [21, 33],
           iconUrl: 'assets/images/marker-icon.png',
         }),
         draggable: true,
@@ -207,7 +210,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       provider: provider,
       marker: {
         icon: L.icon({
-          iconSize: [ 21, 33 ],
+          iconSize: [21, 33],
           iconUrl: 'assets/images/marker-icon.png',
         }),
         draggable: true,
@@ -233,6 +236,11 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
   }
 
+  onLocateDeactivate(e: L.LeafletEvent) {
+    this.myLocation.remove();
+    this.myLocation = undefined!;
+  }
+
   async onMapReady($event: L.Map) {
     this.map = $event;
     this.assignSidebarControl();
@@ -241,6 +249,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.map.addControl(this.locateControl);
     this.map.on('locationfound', this.onLocationFound.bind(this));
     this.map.on('locationerror', this.onLocationError.bind(this));
+    this.map.on('locatedeactivate', this.onLocateDeactivate.bind(this));
     this.assignSearchControl();
     this.map.addControl(this.searchControl);
     this.map.on('geosearch/showlocation', this.onGeosearchShowLocation.bind(this));
@@ -258,15 +267,24 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.mapService.findLineRoutesByName($event.name!).subscribe({
       next: (response) => {
         response.forEach((lineRoute) => {
-          const coordinates = lineRoute.geom.coordinates.map((coordinate: any) => [ coordinate[1], coordinate[0] ]);
+          const coordinates = lineRoute.geom.coordinates.map((coordinate: any) => [coordinate[1], coordinate[0]]);
           this.lineRoutesSelected.push(L.polyline(coordinates, {
+            color: '#EE675C',
             weight: 5,
           }));
         });
-        this.lineRoutesSelected.forEach((lineRoute) => {
-          this.map.addLayer(lineRoute);
-        });
         this.sidebarControl.close();
+      },
+    });
+  }
+
+  onShowNearestLinesRoutes() {
+    this.nearestLinesRoutes = [];
+    this.sidebar.loadingNearestLines = true;
+    this.mapService.findNearestLineRoute({coordinate: [this.myLocation.getLatLng().lng, this.myLocation.getLatLng().lat]}).subscribe({
+      next: (linesNames) => {
+        this.sidebar.linesNearest = linesNames;
+        this.sidebar.loadingNearestLines = false;
       },
     });
   }

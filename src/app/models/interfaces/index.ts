@@ -1,2 +1,2 @@
 export { LineNameI } from './line-name';
-export { LineRouteI, FindBestLineRoute } from './line-route';
+export { LineRouteI, FindBestLineRoute, NearestLinesRoutes } from './line-route';

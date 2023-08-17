@@ -1,0 +1,30 @@
+<div class="list-group">
+  <div
+    *ngFor="let line of linesNames"
+    class="list-group-item"
+  >
+    <div>
+      <h3 class="list-group-item-heading text-center h1">
+        {{ line.name }}
+      </h3>
+      <div class="logo-container">
+        <img [src]="getImageUrl(line.name!)" alt="Línea {{ line.name }}" height="100%" width="100%"
+             class="logo-micro"/>
+      </div>
+      <div class="text-center my-3">
+        <button
+          class="btn btn-danger btn-block mx-1 my-1"
+          (click)="onLineSelected(line)"
+        >
+          Ver recorrido
+        </button>
+        <button
+          class="btn btn-secondary btn-block mx-1 my-1"
+          (click)="onLineInfoSelected(line)"
+        >
+          Ver información
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

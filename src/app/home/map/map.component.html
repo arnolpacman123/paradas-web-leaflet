@@ -9,6 +9,10 @@
 >
   <div *ngIf="destination" [leafletLayer]="destination"></div>
   <div *ngFor="let lineRoute of lineRoutesSelected" [leafletLayer]="lineRoute"></div>
+  <div *ngFor="let lineRoute of nearestLinesRoutes" [leafletLayer]="lineRoute"></div>
 </div>
 
-<app-sidebar [lines]="lines" [result]="lines" (lineSelected)="lineSelected($event)"></app-sidebar>
+<app-sidebar #sidebar [lines]="lines" [result]="lines" [myLocation]="myLocation"
+             (lineSelected)="lineSelected($event)"
+             (onShowNearestLinesRoutes)="onShowNearestLinesRoutes()"
+></app-sidebar>

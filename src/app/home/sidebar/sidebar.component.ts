@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { LineNameI } from "@models/interfaces";
+import * as L from 'leaflet';
 
 @Component({
   selector: 'app-sidebar',
@@ -10,14 +11,13 @@ export class SidebarComponent {
   @Input() lines: LineNameI[] = [];
   @Input() result: LineNameI[] = this.lines;
   @Output() lineSelected = new EventEmitter<LineNameI>();
+  @Input() myLocation!: L.Marker;
+  @Output() onShowNearestLinesRoutes = new EventEmitter();
   searchText: string = '';
+  linesNearest: LineNameI[] = [];
+  loadingNearestLines: boolean = false;
 
   constructor() {
-  }
-
-  getImageUrl(name: string) {
-    const lineString = `LINEA ${ name }`.replaceAll(' ', '+');
-    return `https://imagenes-micros.s3.amazonaws.com/${ lineString }.jpg`;
   }
 
   onLineSelected(line: LineNameI) {
@@ -36,5 +36,9 @@ export class SidebarComponent {
 
   onSearchText() {
     this.search(this.searchText);
+  }
+
+  showNearestLinesRoutes() {
+    this.onShowNearestLinesRoutes.emit();
   }
 }
