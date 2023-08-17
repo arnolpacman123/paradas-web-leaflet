@@ -3,14 +3,17 @@
     <ul role="tablist">
       <li><a href="#lines" role="tab"><i class="fa fa-bars"></i></a></li>
       <li><a href="#lines-nearest" role="tab"><i class="fa fa-map-marker"></i></a></li>
+      <li><a href="#plane-travel" role="tab"><i class="fa fa-route"></i></a></li>
     </ul>
   </div>
 
   <div class="leaflet-sidebar-content">
     <div class="leaflet-sidebar-pane" id="lines">
-      <h2 class="text-center mt-2">
-        Líneas de Micros
-      </h2>
+      <div class="text-center my-3">
+        <p class="h1 mx-2 mt-2">Micros
+          <img src="assets/images/autobus.png" alt="Icon" class="icon-bus mx-2"/>
+        </p>
+      </div>
       <div class="text-center row">
         <mat-form-field appearance="outline">
           <input
@@ -26,25 +29,27 @@
     </div>
 
     <div class="leaflet-sidebar-pane" id="lines-nearest">
-      <h2 class="text-center mt-2">
+      <h1 class="text-center mt-2">
         Líneas cerca de mí
-      </h2>
+      </h1>
       <div class="text-center">
         <ng-container *ngIf="myLocation; else notMyLocation">
           <ng-container
             *ngIf="!loadingNearestLines; else loadingNearestLinesH"
           >
             <button
-              class="btn btn-primary btn-block mx-1 mb-4"
+              class="btn btn-success btn-block mx-1 mb-4 px-4 py-3 my-3"
               (click)="showNearestLinesRoutes()"
             >
+              <span class="h5">
               Ver líneas cerca de mí
+              </span>
             </button>
             <app-lines-list [linesNames]="linesNearest" (lineSelected)="onLineSelected($event)"></app-lines-list>
           </ng-container>
           <ng-template #loadingNearestLinesH>
             <div class="d-flex justify-content-center">
-              <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+              <div class="spinner-border text-success" style="width: 3rem; height: 3rem;" role="status">
                 <span class="sr-only">Cargando...</span>
               </div>
             </div>
@@ -52,9 +57,35 @@
         </ng-container>
         <ng-template #notMyLocation>
           <div class="alert alert-danger">
-            Active su ubicación primero...
+            <h2>
+              Active su ubicación primero...
+            </h2>
           </div>
         </ng-template>
+      </div>
+    </div>
+
+    <div class="leaflet-sidebar-pane" id="plane-travel">
+      <div class="text-center my-3">
+        <p class="h1 mx-2 mt-2">Viaje en micro(s)
+          <img src="assets/images/autobus.png" alt="Icon" class="icon-bus mx-2"/>
+        </p>
+        <ng-container *ngIf="myLocation; else notMyLocation">
+          <ng-container *ngIf="destination; else notDestination">
+            <button class="btn btn-success btn-block mx-1 mb-4 px-4 py-3 my-3" (click)="planeTravel()">
+              <span class="h5">
+                Planear viaje
+              </span>
+            </button>
+          </ng-container>
+          <ng-template #notDestination>
+            <div class="alert alert-danger">
+              <h2>
+                Marque un destino...
+              </h2>
+            </div>
+          </ng-template>
+        </ng-container>
       </div>
     </div>
   </div>

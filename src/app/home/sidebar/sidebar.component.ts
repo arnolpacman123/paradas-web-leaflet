@@ -12,7 +12,9 @@ export class SidebarComponent {
   @Input() result: LineNameI[] = this.lines;
   @Output() lineSelected = new EventEmitter<LineNameI>();
   @Input() myLocation!: L.Marker;
+  @Input() destination!: L.Marker;
   @Output() onShowNearestLinesRoutes = new EventEmitter();
+  @Output() onPlaneTravel = new EventEmitter();
   searchText: string = '';
   linesNearest: LineNameI[] = [];
   loadingNearestLines: boolean = false;
@@ -40,5 +42,9 @@ export class SidebarComponent {
 
   showNearestLinesRoutes() {
     this.onShowNearestLinesRoutes.emit();
+  }
+
+  planeTravel() {
+    this.onPlaneTravel.emit();
   }
 }

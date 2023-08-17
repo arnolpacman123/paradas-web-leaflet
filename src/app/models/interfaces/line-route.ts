@@ -18,3 +18,8 @@ export interface FindBestLineRoute {
 export interface NearestLinesRoutes {
   coordinate: [ number, number ];
 }
+
+export interface PlaneTravel {
+  myLocationCoordinate: [ number, number ];
+  destinationCoordinate: [ number, number ];
+}

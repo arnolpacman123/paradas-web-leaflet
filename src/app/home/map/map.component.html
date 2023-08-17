@@ -13,6 +13,8 @@
 </div>
 
 <app-sidebar #sidebar [lines]="lines" [result]="lines" [myLocation]="myLocation"
+             [destination]="destination"
              (lineSelected)="lineSelected($event)"
              (onShowNearestLinesRoutes)="onShowNearestLinesRoutes()"
+             (onPlaneTravel)="planeTravel()"
 ></app-sidebar>
