@@ -34,7 +34,8 @@ export class MapComponent implements OnInit, AfterViewInit {
         ),
         minZoom: 9.5,
         zoomAnimation: true,
-        touchRotate: true,
+        rotate: true,
+        rotateControl: true,
     };
 
     layersControl: LeafletControlLayersConfig = {
