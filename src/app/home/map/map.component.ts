@@ -4,52 +4,6 @@ import 'leaflet-routing-machine';
 import 'leaflet.locatecontrol';
 import 'leaflet-sidebar-v2';
 import 'leaflet-rotate';
-
-declare module 'leaflet' {
-    interface MapOptions {
-        rotate?: boolean;
-        bearing?: number;
-        trackContainerMutation?: boolean;
-        touchRotate?: boolean | string;
-        shiftKeyRotate?: boolean | string;
-        rotateControl?: boolean;
-    }
-
-    interface Map {
-        setBearing: (theta: number) => void;
-        getBearing: () => number;
-        rotatedPointToMapPanePoint: (point: Point) => Point;
-        mapPanePointToRotatedPoint: (point: Point) => Point;
-    }
-
-    interface Point {
-        rotate: (theta: number) => Point;
-        rotateFrom: (theta: number, pivot: Point) => Point;
-    }
-
-    interface MarkerOptions {
-        rotation?: number;
-        rotateWithView?: boolean;
-    }
-
-    interface Marker {
-        setRotation: (rotation: number) => void;
-    }
-
-    namespace Control {
-        export class Rotate extends L.Control {
-            constructor(options?: L.ControlOptions);
-
-            onAdd(map: L.Map): HTMLElement;
-
-            onRemove(map: L.Map): void;
-        }
-    }
-
-    namespace control {
-        export function rotate(options?: L.ControlOptions): Control.Rotate;
-    }
-}
 import {LeafletControlLayersConfig} from "@asymmetrik/ngx-leaflet";
 import {GeoSearchControl, OpenStreetMapProvider} from 'leaflet-geosearch';
 import {MapService} from "@services/map.service";
@@ -292,9 +246,6 @@ export class MapComponent implements OnInit, AfterViewInit {
 
     async onMapReady($event: L.Map) {
         this.map = $event;
-        this.map.addControl(new L.Control.Rotate({
-            position: 'bottomright',
-        }));
         this.assignSidebarControl();
         this.map.addControl(this.sidebarControl);
         this.assignLocationControl();
