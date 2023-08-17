@@ -36,6 +36,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         zoomAnimation: true,
         rotate: true,
         touchRotate: true,
+        bearing: 0,
     };
 
     layersControl: LeafletControlLayersConfig = {
@@ -125,11 +126,7 @@ export class MapComponent implements OnInit, AfterViewInit {
             (this.routingControl as L.Routing.Control).on('routesfound', (e) => {
                 e.routes.forEach((route: any) => {
                     const coordinates = route.coordinates.map((coordinate: any) => [coordinate.lng, coordinate.lat]);
-                    this.mapService.findBestLineRoute({coordinates}).subscribe({
-                        next: (response) => {
-                            console.log(response);
-                        },
-                    });
+
                 });
             });
             this.map.addControl(this.routingControl);
