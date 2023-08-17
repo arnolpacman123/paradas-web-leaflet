@@ -37,7 +37,6 @@ export class MapComponent implements OnInit, AfterViewInit {
         rotate: true,
         touchRotate: true,
         trackContainerMutation: true,
-        bearing: 0,
     };
 
     layersControl: LeafletControlLayersConfig = {
