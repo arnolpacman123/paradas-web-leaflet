@@ -10,7 +10,7 @@
   <div class="leaflet-sidebar-content">
     <div class="leaflet-sidebar-pane" id="lines">
       <div class="text-center my-3">
-        <p class="h1 mx-2 mt-2">Micros
+        <p class="h2 mx-2 mt-2">Micros
           <img src="assets/images/autobus.png" alt="Icon" class="icon-bus mx-2"/>
         </p>
       </div>
@@ -29,9 +29,11 @@
     </div>
 
     <div class="leaflet-sidebar-pane" id="lines-nearest">
-      <h1 class="text-center mt-2">
-        Líneas cerca de mí
-      </h1>
+      <div class="text-center my-3">
+        <p class="h2 text-center mt-2">
+          Líneas cerca de mí
+        </p>
+      </div>
       <div class="text-center">
         <ng-container *ngIf="myLocation; else notMyLocation">
           <ng-container
@@ -67,8 +69,8 @@
 
     <div class="leaflet-sidebar-pane" id="plane-travel">
       <div class="text-center my-3">
-        <p class="h1 mx-2 mt-2">Viaje en micro(s)
-          <img src="assets/images/autobus.png" alt="Icon" class="icon-bus mx-2"/>
+        <p class="h2 mx-2 mt-2">Viaje en micro(s)
+          <i class="fa fa-route mx-2"></i>
         </p>
         <ng-container *ngIf="myLocation; else notMyLocation">
           <ng-container *ngIf="destination; else notDestination">

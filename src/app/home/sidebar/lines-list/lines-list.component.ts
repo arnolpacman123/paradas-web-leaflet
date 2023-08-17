@@ -18,8 +18,4 @@ export class LinesListComponent {
   onLineSelected(line: LineNameI) {
     this.lineSelected.emit(line);
   }
-
-  onLineInfoSelected(line: LineNameI) {
-
-  }
 }
