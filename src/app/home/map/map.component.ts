@@ -1,18 +1,18 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
 import 'leaflet.locatecontrol';
 import 'leaflet-sidebar-v2';
-import {LeafletControlLayersConfig} from "@asymmetrik/ngx-leaflet";
-import {GeoSearchControl, OpenStreetMapProvider} from 'leaflet-geosearch';
-import {MapService} from "@services/map.service";
-import {LineNameI} from "@models/interfaces";
-import {SidebarComponent} from "@home/sidebar/sidebar.component";
+import { LeafletControlLayersConfig } from "@asymmetrik/ngx-leaflet";
+import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
+import { MapService } from "@services/map.service";
+import { LineNameI } from "@models/interfaces";
+import { SidebarComponent } from "@home/sidebar/sidebar.component";
 
 @Component({
     selector: 'app-map',
     templateUrl: './map.component.html',
-    styleUrls: ['./map.component.css']
+    styleUrls: [ './map.component.css' ]
 })
 export class MapComponent implements OnInit, AfterViewInit {
     options: L.MapOptions = {
@@ -21,7 +21,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         layers: [
             L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 maxZoom: 20,
-                subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                subdomains: [ 'mt0', 'mt1', 'mt2', 'mt3' ],
             }),
         ],
         doubleClickZoom: false,
@@ -39,11 +39,11 @@ export class MapComponent implements OnInit, AfterViewInit {
         baseLayers: {
             'Google Maps': L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 maxZoom: 22,
-                subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                subdomains: [ 'mt0', 'mt1', 'mt2', 'mt3' ],
             }),
             'Google Satellite': L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
                 maxZoom: 22,
-                subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                subdomains: [ 'mt0', 'mt1', 'mt2', 'mt3' ],
             }),
             'Open Street Map': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 20,
@@ -63,7 +63,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     lineRoutesSelected: L.Polyline[] = [];
     nearestLinesRoutes: L.Polyline[] = [];
     map!: L.Map;
-    @ViewChild('sidebar', {static: false}) sidebar!: SidebarComponent;
+    @ViewChild('sidebar', { static: false }) sidebar!: SidebarComponent;
 
     constructor(
         private readonly mapService: MapService,
@@ -87,7 +87,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         } else {
             this.destination = L.marker($event.latlng, {
                 icon: L.icon({
-                    iconSize: [21, 33],
+                    iconSize: [ 21, 33 ],
                     iconUrl: 'assets/images/marker-icon.png',
                 }),
                 draggable: true,
@@ -121,7 +121,7 @@ export class MapComponent implements OnInit, AfterViewInit {
             this.assignRoutingControl();
             (this.routingControl as L.Routing.Control).on('routesfound', (e) => {
                 e.routes.forEach((route: any) => {
-                    const coordinates = route.coordinates.map((coordinate: any) => [coordinate.lng, coordinate.lat]);
+                    const coordinates = route.coordinates.map((coordinate: any) => [ coordinate.lng, coordinate.lat ]);
 
                 });
             });
@@ -149,14 +149,14 @@ export class MapComponent implements OnInit, AfterViewInit {
             routeWhileDragging: true,
             altLineOptions: {
                 styles: [
-                    {color: '#EE675C', weight: 5},
+                    { color: '#EE675C', weight: 5 },
                 ],
                 extendToWaypoints: true,
                 missingRouteTolerance: 100,
             },
             lineOptions: {
                 styles: [
-                    {color: '#EE675C', weight: 5},
+                    { color: '#EE675C', weight: 5 },
                 ],
                 extendToWaypoints: true,
                 missingRouteTolerance: 100,
@@ -188,7 +188,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         } else {
             this.myLocation = L.marker(e.latlng, {
                 icon: L.icon({
-                    iconSize: [21, 33],
+                    iconSize: [ 21, 33 ],
                     iconUrl: 'assets/images/marker-icon.png',
                 }),
                 draggable: true,
@@ -206,7 +206,7 @@ export class MapComponent implements OnInit, AfterViewInit {
             provider: provider,
             marker: {
                 icon: L.icon({
-                    iconSize: [21, 33],
+                    iconSize: [ 21, 33 ],
                     iconUrl: 'assets/images/marker-icon.png',
                 }),
                 draggable: true,
@@ -263,7 +263,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         this.mapService.findLineRoutesByName($event.name!).subscribe({
             next: (response) => {
                 response.forEach((lineRoute) => {
-                    const coordinates = lineRoute.geom.coordinates.map((coordinate: any) => [coordinate[1], coordinate[0]]);
+                    const coordinates = lineRoute.geom.coordinates.map((coordinate: any) => [ coordinate[ 1 ], coordinate[ 0 ] ]);
                     this.lineRoutesSelected.push(L.polyline(coordinates, {
                         color: '#EE675C',
                         weight: 5,
@@ -277,7 +277,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     onShowNearestLinesRoutes() {
         this.nearestLinesRoutes = [];
         this.sidebar.loadingNearestLines = true;
-        this.mapService.findNearestLineRoute({coordinate: [this.myLocation.getLatLng().lng, this.myLocation.getLatLng().lat]}).subscribe({
+        this.mapService.findNearestLineRoute({ coordinate: [ this.myLocation.getLatLng().lng, this.myLocation.getLatLng().lat ] }).subscribe({
             next: (linesNames) => {
                 this.sidebar.linesNearest = linesNames;
                 this.sidebar.loadingNearestLines = false;
