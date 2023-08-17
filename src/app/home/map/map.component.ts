@@ -3,7 +3,6 @@ import * as L from 'leaflet';
 import 'leaflet-routing-machine';
 import 'leaflet.locatecontrol';
 import 'leaflet-sidebar-v2';
-import 'leaflet-rotate';
 import {LeafletControlLayersConfig} from "@asymmetrik/ngx-leaflet";
 import {GeoSearchControl, OpenStreetMapProvider} from 'leaflet-geosearch';
 import {MapService} from "@services/map.service";
@@ -34,7 +33,6 @@ export class MapComponent implements OnInit, AfterViewInit {
         ),
         minZoom: 9.5,
         zoomAnimation: true,
-        touchRotate: true,
     };
 
     layersControl: LeafletControlLayersConfig = {

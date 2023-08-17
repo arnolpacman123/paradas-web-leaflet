@@ -24,7 +24,6 @@
     "bootstrap": "^5.3.1",
     "leaflet": "^1.9.4",
     "leaflet-geosearch": "^3.8.0",
-    "leaflet-rotate": "^0.2.8",
     "leaflet-routing-machine": "^3.2.12",
     "leaflet-sidebar-v2": "^3.2.3",
     "leaflet.locatecontrol": "^0.79.0",
