@@ -36,6 +36,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         zoomAnimation: true,
         rotate: true,
         touchRotate: true,
+        trackContainerMutation: true,
         bearing: 0,
     };
 
