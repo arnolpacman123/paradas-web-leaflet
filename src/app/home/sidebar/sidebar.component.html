@@ -14,18 +14,7 @@
           <img src="assets/images/autobus.png" alt="Icon" class="icon-bus mx-2"/>
         </p>
       </div>
-      <div class="text-center row">
-        <mat-form-field appearance="outline">
-          <input
-            matInput
-            [(ngModel)]="searchText"
-            placeholder="Buscar línea"
-            autocomplete="off"
-            (input)="onSearchText()"
-          />
-        </mat-form-field>
-      </div>
-      <app-lines-list [linesNames]="result" (lineSelected)="onLineSelected($event)"></app-lines-list>
+      <app-lines-list [linesNames]="result" [result]="result" (lineSelected)="onLineSelected($event)"></app-lines-list>
     </div>
 
     <div class="leaflet-sidebar-pane" id="lines-nearest">
@@ -47,7 +36,7 @@
               Ver líneas cerca de mí
               </span>
             </button>
-            <app-lines-list [linesNames]="linesNearest" (lineSelected)="onLineSelected($event)"></app-lines-list>
+            <app-lines-list [linesNames]="linesNearest" [result]="linesNearest" (lineSelected)="onLineSelected($event)"></app-lines-list>
           </ng-container>
           <ng-template #loadingNearestLinesH>
             <div class="d-flex justify-content-center">

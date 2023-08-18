@@ -15,7 +15,8 @@ export class SidebarComponent {
   @Input() destination!: L.Marker;
   @Output() onShowNearestLinesRoutes = new EventEmitter();
   @Output() onPlaneTravel = new EventEmitter();
-  searchText: string = '';
+  searchTextAllLines: string = '';
+  searchTextNearestLines: string = '';
   linesNearest: LineNameI[] = [];
   loadingNearestLines: boolean = false;
 
@@ -26,18 +27,14 @@ export class SidebarComponent {
     this.lineSelected.emit(line);
   }
 
-  onLineInfoSelected(line: LineNameI) {
-
-  }
-
   search(searchText: string) {
     this.result = this.lines.filter((line) =>
       line.name!.includes(searchText.toUpperCase())
     );
   }
 
-  onSearchText() {
-    this.search(this.searchText);
+  onSearchText(searchText: string) {
+    this.search(searchText);
   }
 
   showNearestLinesRoutes() {

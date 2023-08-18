@@ -1,26 +1,39 @@
-<div class="list-group" *ngIf="linesNames">
-    <div
-            *ngFor="let line of linesNames"
-            class="list-group-item"
-    >
-        <div>
-            <h2 class="list-group-item-heading text-center h1">
-                {{ line.name }}
-            </h2>
-            <div class="logo-container">
-                <img [src]="getImageUrl(line.name!)" alt="Línea {{ line.name }}" height="100%" width="100%"
-                     class="logo-micro"/>
-            </div>
-            <div class="text-center mt-3">
-                <div class="d-grid gap-2 mx-5">
-                    <button
-                            class="btn btn-success mx-1 my-1"
-                            (click)="onLineSelected(line)"
-                    >
-                        <span class="h5">Ver ruta</span> <i class="fa fa-route mx-2"></i>
-                    </button>
-                </div>
-            </div>
+<ng-container *ngIf="linesNames.length > 0">
+  <div class="text-center row">
+    <mat-form-field appearance="outline">
+      <input
+        matInput
+        [(ngModel)]="searchText"
+        placeholder="Buscar línea"
+        autocomplete="off"
+        (input)="onSearchText(searchText)"
+      />
+    </mat-form-field>
+  </div>
+</ng-container>
+<div class="list-group" *ngIf="linesNames.length > 0">
+  <div
+    *ngFor="let line of result"
+    class="list-group-item"
+  >
+    <div>
+      <h2 class="list-group-item-heading text-center h1">
+        {{ line.name }}
+      </h2>
+      <div class="logo-container">
+        <img [src]="getImageUrl(line.name!)" alt="Línea {{ line.name }}" height="100%" width="100%"
+             class="logo-micro"/>
+      </div>
+      <div class="text-center mt-3">
+        <div class="d-grid gap-2 mx-5">
+          <button
+            class="btn btn-success mx-1 my-1"
+            (click)="onLineSelected(line)"
+          >
+            <span class="h5">Ver ruta</span> <i class="fa fa-route mx-2"></i>
+          </button>
         </div>
+      </div>
     </div>
+  </div>
 </div>

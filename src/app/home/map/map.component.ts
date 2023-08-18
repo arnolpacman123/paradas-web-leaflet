@@ -277,10 +277,15 @@ export class MapComponent implements OnInit, AfterViewInit {
   onShowNearestLinesRoutes() {
     this.nearestLinesRoutes = [];
     this.sidebar.loadingNearestLines = true;
-    this.mapService.findNearestLineRoute({ coordinate: [ this.myLocation.getLatLng().lng, this.myLocation.getLatLng().lat ] }).subscribe({
+    const coordinate: [ number, number ] = [ this.myLocation.getLatLng().lng, this.myLocation.getLatLng().lat ];
+    this.mapService.findNearestLineRoute({ coordinate }).subscribe({
       next: (linesNames) => {
         this.sidebar.linesNearest = linesNames;
         this.sidebar.loadingNearestLines = false;
+      },
+      error: (err) => {
+        this.sidebar.loadingNearestLines = false;
+        console.clear();
       },
     });
   }
