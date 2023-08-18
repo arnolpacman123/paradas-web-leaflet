@@ -11,10 +11,10 @@
     </mat-form-field>
   </div>
 </ng-container>
-<div class="list-group" *ngIf="linesNames.length > 0">
+<div class="row" *ngIf="linesNames.length > 0">
   <div
     *ngFor="let line of result"
-    class="list-group-item"
+    class="col-6"
   >
     <div>
       <h2 class="list-group-item-heading text-center h1">
@@ -25,7 +25,7 @@
              class="logo-micro"/>
       </div>
       <div class="text-center mt-3">
-        <div class="d-grid gap-2 mx-5">
+        <div class="d-grid gap-2">
           <button
             class="btn btn-success mx-1 my-1"
             (click)="onLineSelected(line)"
