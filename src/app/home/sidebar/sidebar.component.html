@@ -1,8 +1,9 @@
 <div id="sidebar" class="leaflet-sidebar collapsed">
   <div class="leaflet-sidebar-tabs">
     <ul role="tablist">
-      <li><a href="#lines" role="tab"><i class="fa fa-bars"></i></a></li>
+      <li><a href="#lines" role="tab"><i class="fa fa-bus"></i></a></li>
       <li><a href="#lines-nearest" role="tab"><i class="fa fa-map-marker"></i></a></li>
+      <li><a href="#qr-code" role="tab"><i class="fa fa-qrcode"></i></a></li>
       <li><a href="#plane-travel" role="tab"><i class="fa fa-route"></i></a></li>
     </ul>
   </div>
@@ -10,18 +11,83 @@
   <div class="leaflet-sidebar-content">
     <div class="leaflet-sidebar-pane" id="lines">
       <div class="text-center my-3">
-        <p class="h2 mx-2 mt-2">Micros
-          <img src="assets/images/autobus.png" alt="Icon" class="icon-bus mx-2"/>
-        </p>
+        <h1 class="h3 mx-2 mt-2">Micros
+          <i class="fa fa-bus mx-2"></i>
+        </h1>
       </div>
-      <app-lines-list [linesNames]="result" [result]="result" (lineSelected)="onLineSelected($event)"></app-lines-list>
+      <app-lines-list [linesNames]="result" [result]="result" (lineSelected)="_onLineSelected($event)"></app-lines-list>
+    </div>
+
+    <div class="leaflet-sidebar-pane" id="qr-code">
+      <div class="text-center my-3">
+        <h1 class="h3 mx-2 mt-2">Puntos QR
+          <i class="fa fa-qrcode mx-2"></i>
+        </h1>
+      </div>
+      <div class="row text-center">
+        <ng-container *ngIf="showNavTabQrCode">
+          <div class="col-12">
+            <div class="row mx-4">
+              <button class="btn btn-success btn-block mx-1 mb-4 py-2" (click)="_onToggleMyQrCode()">
+                {{ toggleMyQrCode ? 'Ocultar' : 'Ver' }} mi punto QR
+              </button>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="!loadingQr; else loadingQrH">
+          <div class="col-12">
+            <div class="row mx-4">
+              <button class="btn btn-success btn-block mx-1 mb-4 py-2" (click)="showQrPoints()">
+                {{ toggleQrPoints ? 'Ocultar' : 'Ver' }} Puntos QR
+              </button>
+            </div>
+          </div>
+        </ng-container>
+        <ng-template #loadingQrH>
+          <div class="col">
+            <div class="d-flex justify-content-center">
+              <div class="spinner-border text-success" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Cargando...</span>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+      <ng-container *ngIf="toggleMyQrCode">
+        <ng-container
+          *ngIf="!loadingLinesNearMyQrCode; else loadingLinesNearMyQrCodeH"
+        >
+          <div class="row text-center">
+            <div class="col-12">
+              <div class="row mx-4">
+                <button
+                  class="btn btn-success btn-block mx-1 mb-4 py-2"
+                  (click)="_onShowLinesNearMyQrCode()"
+                >
+                  Ver líneas cerca de mi punto QR
+                </button>
+              </div>
+            </div>
+          </div>
+          <app-lines-list [linesNames]="linesNearMyQrCode" [result]="linesNearMyQrCode"
+                          (lineSelected)="_onLineSelected($event)"></app-lines-list>
+        </ng-container>
+        <ng-template #loadingLinesNearMyQrCodeH>
+          <div class="d-flex justify-content-center">
+            <div class="spinner-border text-success" style="width: 3rem; height: 3rem;" role="status">
+              <span class="sr-only">Cargando...</span>
+            </div>
+          </div>
+        </ng-template>
+      </ng-container>
     </div>
 
     <div class="leaflet-sidebar-pane" id="lines-nearest">
       <div class="text-center my-3">
-        <p class="h2 text-center mt-2">
-          Líneas cerca de mí
-        </p>
+        <h1 class="h3 text-center mt-2">
+          Micros cerca
+          <i class="fa fa-map-marker mx-2"></i>
+        </h1>
       </div>
       <div class="text-center">
         <ng-container *ngIf="myLocation; else notMyLocation">
@@ -29,14 +95,13 @@
             *ngIf="!loadingNearestLines; else loadingNearestLinesH"
           >
             <button
-              class="btn btn-success btn-block mx-1 mb-4 px-4 py-3"
+              class="btn btn-success btn-block mx-1 mb-4 px-3 py-2"
               (click)="showNearestLinesRoutes()"
             >
-              <span class="h5">
-              Ver líneas cerca de mí
-              </span>
+              Ver micros cerca de mí
             </button>
-            <app-lines-list [linesNames]="linesNearest" [result]="linesNearest" (lineSelected)="onLineSelected($event)"></app-lines-list>
+            <app-lines-list [linesNames]="linesNearest" [result]="linesNearest"
+                            (lineSelected)="_onLineSelected($event)"></app-lines-list>
           </ng-container>
           <ng-template #loadingNearestLinesH>
             <div class="d-flex justify-content-center">
@@ -47,10 +112,10 @@
           </ng-template>
         </ng-container>
         <ng-template #notMyLocation>
-          <div class="alert alert-danger">
-            <h2>
-              Active su ubicación primero...
-            </h2>
+          <div class="alert alert-success">
+            <h3 class="h3">
+              Active su ubicación...
+            </h3>
           </div>
         </ng-template>
       </div>
@@ -58,9 +123,9 @@
 
     <div class="leaflet-sidebar-pane" id="plane-travel">
       <div class="text-center my-3">
-        <p class="h2 mx-2 mt-2">Viaje en micro(s)
+        <h1 class="h3 mx-2 mt-2">Viaje en micro(s)
           <i class="fa fa-route mx-2"></i>
-        </p>
+        </h1>
         <ng-container *ngIf="myLocation; else notMyLocation">
           <ng-container *ngIf="destination; else notDestination">
             <button class="btn btn-success btn-block mx-1 mb-4 px-4 py-3 my-3" (click)="planeTravel()">
@@ -70,10 +135,10 @@
             </button>
           </ng-container>
           <ng-template #notDestination>
-            <div class="alert alert-danger">
-              <h2>
+            <div class="alert alert-success">
+              <h3 class="h3">
                 Marque un destino...
-              </h2>
+              </h3>
             </div>
           </ng-template>
         </ng-container>

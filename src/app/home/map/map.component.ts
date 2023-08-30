@@ -8,6 +8,7 @@ import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 import { MapService } from "@services/map.service";
 import { LineNameI } from "@models/interfaces";
 import { SidebarComponent } from "@home/sidebar/sidebar.component";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: 'app-map',
@@ -62,11 +63,21 @@ export class MapComponent implements OnInit, AfterViewInit {
   sidebarControl!: L.Control.Sidebar;
   lineRoutesSelected: L.Polyline[] = [];
   nearestLinesRoutes: L.Polyline[] = [];
+  nearestLinesRoutesToMyQrCode: L.Polyline[] = [];
   map!: L.Map;
   @ViewChild('sidebar', { static: false }) sidebar!: SidebarComponent;
+  param!: Object;
+  showChannel = false;
+  channel!: L.Polyline;
+  pointParam!: L.Marker;
+  coordinateParam!: L.LatLng;
+  showNavTabQrCode = false;
+  qrPoints: L.Marker[] = [];
+  showQrPoints: boolean = false;
 
   constructor(
     private readonly mapService: MapService,
+    private readonly route: ActivatedRoute,
   ) {
   }
 
@@ -76,9 +87,55 @@ export class MapComponent implements OnInit, AfterViewInit {
         this.lines = response;
       },
     });
+    this.mapService.findQrPoints().subscribe({
+      next: (response) => {
+        response.forEach((stopPoint) => {
+          this.qrPoints.push(L.marker([ stopPoint.geom.coordinates[ 1 ], stopPoint.geom.coordinates[ 0 ] ], {
+            icon: L.icon({
+              iconSize: [ 30, 30 ],
+              iconAnchor: [ 18, 18 ],
+              iconUrl: 'assets/images/qr-code.png',
+            }),
+          }));
+        });
+      },
+    });
   }
 
   ngAfterViewInit(): void {
+    this.route.queryParams.subscribe({
+      next: (params: any) => {
+        if (params.hasOwnProperty('lat') && params.hasOwnProperty('lng')) {
+          const lat = parseFloat(params.lat);
+          const lng = parseFloat(params.lng);
+
+          this.mapService.findChannelWithCoordinates(lat, lng).subscribe({
+            next: (response) => {
+              if (!response) return;
+              this.showChannel = true;
+              this.showNavTabQrCode = true;
+              this.param = { lat, lng };
+              this.coordinateParam = L.latLng(lat, lng);
+              this.pointParam = L.marker([ lat, lng ], {
+                icon: L.icon({
+                  iconSize: [ 37, 37 ],
+                  iconAnchor: [ 18, 18 ],
+                  iconUrl: 'assets/images/qr-code.png',
+                  pane: 'overlayPane',
+                }),
+              });
+              this.map.zoomIn(10, {
+                animate: true,
+              });
+              this.map.panTo([ lat, lng ], {
+                animate: true,
+                duration: 1,
+              });
+            },
+          });
+        }
+      },
+    });
   }
 
   onDblClickPutMarker($event: L.LeafletMouseEvent) {
@@ -94,12 +151,11 @@ export class MapComponent implements OnInit, AfterViewInit {
       });
     }
 
-    if (this.myLocation) {
-      // this.showRoutingControl();
-    }
-
     this.destination.on('dblclick', () => {
-      this.destination = undefined!;
+      if (this.destination) {
+        this.destination.remove();
+        this.destination = undefined!;
+      }
       if (this.routingControl) {
         this.map.removeEventListener('routesfound');
         this.map.removeControl(this.routingControl);
@@ -212,7 +268,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         draggable: true,
       },
       notFoundMessage: 'No se encontraron resultados',
-      searchLabel: 'Ingresa el destino',
+      searchLabel: 'Ingrese el destino',
     });
   }
 
@@ -283,7 +339,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         this.sidebar.linesNearest = linesNames;
         this.sidebar.loadingNearestLines = false;
       },
-      error: (err) => {
+      error: (_) => {
         this.sidebar.loadingNearestLines = false;
         console.clear();
       },
@@ -293,10 +349,45 @@ export class MapComponent implements OnInit, AfterViewInit {
   planeTravel() {
     const myLocationCoordinate: [ number, number ] = [ this.myLocation.getLatLng().lng, this.myLocation.getLatLng().lat ];
     const destinationCoordinate: [ number, number ] = [ this.destination.getLatLng().lng, this.destination.getLatLng().lat ];
-    // this.mapService.findPlaneTravel({ myLocationCoordinate, destinationCoordinate }).subscribe({
-    //   next: (linesRoutes) => {
-    //     console.log(linesRoutes);
-    //   },
-    // });
+    console.log({ myLocationCoordinate, destinationCoordinate });
+  }
+
+  toggleMyQrCode() {
+    if (this.pointParam) {
+      this.pointParam.remove();
+      this.pointParam = undefined!;
+    } else {
+      this.pointParam = L.marker([ this.coordinateParam.lat, this.coordinateParam.lng ], {
+        icon: L.icon({
+          iconSize: [ 30, 30 ],
+          iconAnchor: [ 18, 18 ],
+          iconUrl: 'assets/images/qr-code.png',
+        }),
+      });
+    }
+    this.sidebarControl.close();
+  }
+
+  onShowQrPoints() {
+    this.sidebar.loadingQr = true;
+    this.showQrPoints = !this.showQrPoints;
+    this.sidebar.loadingQr = false;
+    this.sidebarControl.close();
+  }
+
+  onShowLinesNearMyQrCode() {
+    this.nearestLinesRoutesToMyQrCode = [];
+    this.sidebar.loadingLinesNearMyQrCode = true;
+    const coordinate: [ number, number ] = [ this.coordinateParam.lng, this.coordinateParam.lat ];
+    this.mapService.findNearestLineRoute({ coordinate }).subscribe({
+      next: (linesNames) => {
+        this.sidebar.linesNearMyQrCode = linesNames;
+        this.sidebar.loadingLinesNearMyQrCode = false;
+      },
+      error: (_) => {
+        this.sidebar.loadingLinesNearMyQrCode = false;
+        console.clear();
+      },
+    });
   }
 }

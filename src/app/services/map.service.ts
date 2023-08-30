@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { environment } from "@environments/environment.prod";
-import { FindBestLineRoute, LineNameI, LineRouteI, NearestLinesRoutes } from "@models/interfaces";
+import { FindBestLineRoute, LineNameI, LineRouteI, NearestLinesRoutes, StopPointI } from "@models/interfaces";
 import { PlaneTravel } from "@models/interfaces/line-route";
 
 @Injectable({
@@ -32,5 +32,13 @@ export class MapService {
 
   findPlaneTravel(planeTravel: PlaneTravel) {
     return this.http.post<LineRouteI[]>(`${ environment.apiBaseUrl }/lines-routes/find-plane-travel`, planeTravel);
+  }
+
+  findChannelWithCoordinates(lat: number, lng: number) {
+    return this.http.get<any>(`${ environment.apiBaseUrl }/stops-points/find-with-coordinates?lat=${ lat }&lng=${ lng }`);
+  }
+
+  findQrPoints() {
+    return this.http.get<StopPointI[]>(`${ environment.apiBaseUrl }/stops-points`);
   }
 }

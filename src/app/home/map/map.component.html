@@ -10,11 +10,21 @@
   <div *ngIf="destination" [leafletLayer]="destination"></div>
   <div *ngFor="let lineRoute of lineRoutesSelected" [leafletLayer]="lineRoute"></div>
   <div *ngFor="let lineRoute of nearestLinesRoutes" [leafletLayer]="lineRoute"></div>
+  <div *ngIf="param && showChannel" [leafletLayer]="channel"></div>
+  <div *ngIf="pointParam" [leafletLayer]="pointParam"></div>
+  <ng-container *ngIf="showQrPoints">
+    <div *ngFor="let qrPoint of qrPoints" [leafletLayer]="qrPoint"></div>
+  </ng-container>
 </div>
 
 <app-sidebar #sidebar [lines]="lines" [result]="lines" [myLocation]="myLocation"
              [destination]="destination"
-             (lineSelected)="lineSelected($event)"
+             [showNavTabQrCode]="showNavTabQrCode"
+             [toggleMyQrCode]="showNavTabQrCode"
+             (onLineSelected)="lineSelected($event)"
              (onShowNearestLinesRoutes)="onShowNearestLinesRoutes()"
              (onPlaneTravel)="planeTravel()"
+             (onToggleMyQrCode)="toggleMyQrCode()"
+             (onShowQrPoints)="onShowQrPoints()"
+             (onShowLinesNearMyQrCode)="onShowLinesNearMyQrCode()"
 ></app-sidebar>
