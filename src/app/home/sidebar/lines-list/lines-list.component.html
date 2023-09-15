@@ -14,7 +14,7 @@
 <div class="row" *ngIf="linesNames.length > 0">
   <div
     *ngFor="let line of result"
-    class="col-6 mb-4"
+    class="col-6 mb-4 mx-0"
   >
     <h2 class="list-group-item-heading text-center card-title h4">
       {{ line.name | titlecase }}
@@ -27,15 +27,17 @@
     <!-- Sección con 2 botones -->
     <div class="d-flex my-2">
       <button
-        class="btn btn-success flex-fill text-truncate my-1"
+        class="btn btn-success flex-fill my-1"
         (click)="onLineSelected(line, 'IDA')"
+        style="font-size: 0.75rem;"
       >
         Ida <i class="fa fa-route"></i>
       </button>
       <span class="mx-1"></span>
       <button
-        class="btn btn-primary flex-fill text-truncate my-1"
+        class="btn btn-primary flex-fill my-1"
         (click)="onLineSelected(line, 'VUELTA')"
+        style="font-size: 0.75rem;"
       >
         Vuelta <i class="fa fa-route"></i>
       </button>
