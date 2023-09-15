@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { LineNameI } from "@models/interfaces";
 import * as L from 'leaflet';
+import { FindLineRoute } from "@models/interfaces/line-route";
 
 @Component({
   selector: 'app-sidebar',
@@ -10,7 +11,7 @@ import * as L from 'leaflet';
 export class SidebarComponent {
   @Input() lines: LineNameI[] = [];
   @Input() result: LineNameI[] = this.lines;
-  @Output() onLineSelected = new EventEmitter<LineNameI>();
+  @Output() onLineSelected = new EventEmitter<FindLineRoute>();
   @Input() myLocation!: L.Marker;
   @Input() destination!: L.Marker;
   @Output() onShowNearestLinesRoutes = new EventEmitter();
@@ -30,8 +31,8 @@ export class SidebarComponent {
   constructor() {
   }
 
-  _onLineSelected(line: LineNameI) {
-    this.onLineSelected.emit(line);
+  _onLineSelected(findLineRoute: FindLineRoute) {
+    this.onLineSelected.emit(findLineRoute);
   }
 
   showNearestLinesRoutes() {

@@ -15,6 +15,11 @@ export interface FindBestLineRoute {
   coordinates: Array<[ number, number ]>;
 }
 
+export interface FindLineRoute {
+  name?: string;
+  ground?: string;
+}
+
 export interface NearestLinesRoutes {
   coordinate: [ number, number ];
 }

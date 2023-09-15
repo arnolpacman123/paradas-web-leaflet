@@ -24,13 +24,21 @@
            class="logo-micro"/>
     </div>
 
-    <div class="text-center mt-3">
+    <!-- Sección con 2 botones -->
+    <div class="d-flex my-2">
         <button
-          class="btn btn-success mx-1 my-1"
-          (click)="onLineSelected(line)"
+          class="btn btn-primary mx-1 my-1"
+          (click)="onLineSelected(line, 'IDA')"
         >
-          Ver ruta <i class="fa fa-route mx-2"></i>
+          Ida <i class="fa fa-route"></i>
+        </button>
+        <button
+          class="btn btn-success my-1"
+          (click)="onLineSelected(line, 'VUELTA')"
+        >
+          Vuelta <i class="fa fa-route"></i>
         </button>
     </div>
+
   </div>
 </div>

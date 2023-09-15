@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { environment } from "@environments/environment.prod";
 import { FindBestLineRoute, LineNameI, LineRouteI, NearestLinesRoutes, StopPointI } from "@models/interfaces";
-import { PlaneTravel } from "@models/interfaces/line-route";
+import { FindLineRoute, PlaneTravel } from "@models/interfaces/line-route";
 
 @Injectable({
   providedIn: 'root'
@@ -18,8 +18,8 @@ export class MapService {
     return this.http.get<LineNameI[]>(`${ environment.apiBaseUrl }/lines-names`);
   }
 
-  findLineRoutesByName(name: string) {
-    return this.http.get<LineRouteI[]>(`${ environment.apiBaseUrl }/lines-routes/find-by-name/${ name }`);
+  findLineRoutesByName(findLineRoute: FindLineRoute) {
+    return this.http.post<LineRouteI>(`${ environment.apiBaseUrl }/lines-routes/find-line-route`, findLineRoute);
   }
 
   findBestLineRoute(findBestLineRoute: FindBestLineRoute) {

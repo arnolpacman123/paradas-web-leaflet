@@ -9,6 +9,7 @@ import { MapService } from "@services/map.service";
 import { LineNameI } from "@models/interfaces";
 import { SidebarComponent } from "@home/sidebar/sidebar.component";
 import { ActivatedRoute } from "@angular/router";
+import { FindLineRoute } from "@models/interfaces/line-route";
 
 @Component({
   selector: 'app-map',
@@ -314,17 +315,15 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
   }
 
-  lineSelected($event: LineNameI) {
+  lineSelected($event: FindLineRoute) {
     this.lineRoutesSelected = [];
-    this.mapService.findLineRoutesByName($event.name!).subscribe({
+    this.mapService.findLineRoutesByName($event).subscribe({
       next: (response) => {
-        response.forEach((lineRoute) => {
-          const coordinates = lineRoute.geom.coordinates.map((coordinate: any) => [ coordinate[ 1 ], coordinate[ 0 ] ]);
+          const coordinates = response.geom.coordinates.map((coordinate: any) => [ coordinate[ 1 ], coordinate[ 0 ] ]);
           this.lineRoutesSelected.push(L.polyline(coordinates, {
             color: '#EE675C',
             weight: 5,
           }));
-        });
         this.sidebarControl.close();
       },
     });
