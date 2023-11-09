@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
 import 'leaflet.locatecontrol';
@@ -10,13 +10,15 @@ import { LineNameI } from "@models/interfaces";
 import { SidebarComponent } from "@home/sidebar/sidebar.component";
 import { ActivatedRoute } from "@angular/router";
 import { FindLineRoute } from "@models/interfaces/line-route";
+import { Subscription } from 'rxjs';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: [ './map.component.css' ]
 })
-export class MapComponent implements OnInit, AfterViewInit {
+export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   options: L.MapOptions = {
     center: L.latLng(-17.7834, -63.1821),
     zoom: 13,
@@ -79,7 +81,13 @@ export class MapComponent implements OnInit, AfterViewInit {
   constructor(
     private readonly mapService: MapService,
     private readonly route: ActivatedRoute,
+    private breakpointObserver: BreakpointObserver,
   ) {
+    this.subscription = breakpointObserver.observe([
+      Breakpoints.HandsetPortrait
+    ]).subscribe(result => {
+      this.isSmallScreen = result.matches;
+    });
   }
 
   ngOnInit(): void {
@@ -388,5 +396,20 @@ export class MapComponent implements OnInit, AfterViewInit {
         console.clear();
       },
     });
+  }
+
+  isSmallScreen = false;
+  private subscription!: Subscription;
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
+  styleMap(): string {
+    if (this.isSmallScreen) {
+      return "height: calc(100% - 168px); width: 100%";
+    } else {
+      return 'height: calc(100% - 140px); width: 100%;';
+    }
   }
 }

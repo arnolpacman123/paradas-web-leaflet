@@ -3,7 +3,7 @@
   leaflet
   [leafletOptions]="options"
   [leafletLayersControl]="layersControl"
-  style="height: calc(100% - 120px); width: 100%;"
+  [style]="styleMap()"
   (leafletMapReady)="onMapReady($event)"
   (leafletDoubleClick)="onDblClickPutMarker($event)"
 >

@@ -1,6 +1,85 @@
-<div class="logo-container"
+<!-- <div class="logo-container"
 >
     <img ngSrc="assets/images/logo-gamsc.png" alt="logo" class="logo"
          height="426" width="1024" [priority]="true"
     />
-</div>
+</div> -->
+<ng-container *ngIf="!isSmallScreen; else elseBlock">
+  <div class="row mx-4 my-0">
+    <div class="col-3 container">
+      <img
+        style="height: 120px"
+        class="logo inverted"
+        src="assets/images/alcalde.png"
+      />
+      <img
+        style="height: 120px"
+        class="logo mx-3"
+        src="assets/images/agency-logo.png"
+      />
+    </div>
+    <div class="col-6 container">
+      <div class="row">
+        <div class="col-12">
+          <p class="text text-center">PLAN DE ORDENAMIENTO</p>
+        </div>
+        <div class="col-12">
+          <p class="text-center my-3">
+            Secretaría Municipal de Tránsito y Transporte &#174;
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-3 container">
+      <a href="https://gmsantacruz.gob.bo/" target="_blank">
+        <img
+          style="width: 250px"
+          class="logo"
+          src="assets/images/logo-alcaldia.png"
+        />
+      </a>
+      <img
+        style="height: 100px"
+        class="logo"
+        src="assets/images/logo-SMTT.png"
+      />
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #elseBlock>
+  <div class="row mx-4">
+    <div class="col-6 container">
+      <img
+        style="height: 70px"
+        class="logo inverted"
+        src="assets/images/alcalde.png"
+      />
+      <img
+        style="height: 70px"
+        class="logo mx-3"
+        src="assets/images/agency-logo.png"
+      />
+    </div>
+    <div class="col-6 container">
+      <a href="https://gmsantacruz.gob.bo/" target="_blank">
+        <img
+          style="width: 250px"
+          class="logo"
+          src="assets/images/logo-alcaldia.png"
+        />
+      </a>
+      <img
+        style="height: 50px"
+        class="logo"
+        src="assets/images/logo-SMTT.png"
+      />
+    </div>
+  </div>
+  <div class="row">
+    <p class="text text-center">PLAN DE ORDENAMIENTO</p>
+    <p class="text-center mt-1">
+      Secretaría Municipal de Tránsito y Transporte &#174;
+    </p>
+  </div>
+</ng-template>
