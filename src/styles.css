@@ -9,4 +9,5 @@ body {
 
 body {
     overflow: hidden;
+    position: fixed;
 }
