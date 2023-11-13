@@ -324,6 +324,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
       position: 'topleft',
       title: 'Pantalla completa',
       content: '<i class="fas fa-expand"></i>',
+      forceSeparateButton: true,
     });
   }
 
