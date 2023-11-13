@@ -3,6 +3,7 @@ import * as L from 'leaflet';
 import 'leaflet-routing-machine';
 import 'leaflet.locatecontrol';
 import 'leaflet-sidebar-v2';
+import 'leaflet.fullscreen';
 import { LeafletControlLayersConfig } from "@asymmetrik/ngx-leaflet";
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 import { MapService } from "@services/map.service";
@@ -64,6 +65,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   routingControl!: L.Routing.Control;
   locateControl!: L.Control.Locate;
   sidebarControl!: L.Control.Sidebar;
+  fullScreenControl!: L.Control.Fullscreen;
   lineRoutesSelected: L.Polyline[] = [];
   nearestLinesRoutes: L.Polyline[] = [];
   nearestLinesRoutesToMyQrCode: L.Polyline[] = [];
@@ -81,7 +83,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private readonly mapService: MapService,
     private readonly route: ActivatedRoute,
-    private breakpointObserver: BreakpointObserver,
+    private readonly breakpointObserver: BreakpointObserver,
   ) {
     this.subscription = breakpointObserver.observe([
       Breakpoints.HandsetPortrait
@@ -304,6 +306,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   async onMapReady($event: L.Map) {
     this.map = $event;
+    this.assignFullScreenControl();
+    this.map.addControl(this.fullScreenControl);
     this.assignSidebarControl();
     this.map.addControl(this.sidebarControl);
     this.assignLocationControl();
@@ -314,6 +318,13 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     this.assignSearchControl();
     this.map.addControl(this.searchControl);
     this.map.on('geosearch/showlocation', this.onGeosearchShowLocation.bind(this));
+  }
+  assignFullScreenControl() {
+    this.fullScreenControl = L.control.fullscreen({
+      position: 'topleft',
+      title: 'Pantalla completa',
+      content: '<i class="fas fa-expand"></i>',
+    });
   }
 
   onLocationError(_: L.LeafletEvent) {
