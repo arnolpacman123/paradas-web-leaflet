@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://paradas-api.onrender.com/api',
+  apiBaseUrl: 'https://paradas-api-v2.adaptable.app/api',
 };
