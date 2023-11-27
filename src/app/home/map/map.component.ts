@@ -7,7 +7,7 @@ import 'leaflet.fullscreen';
 import { LeafletControlLayersConfig } from "@asymmetrik/ngx-leaflet";
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 import { MapService } from "@services/map.service";
-import { LineNameI } from "@models/interfaces";
+import { LineNameI, RoutingResponseI } from "@models/interfaces";
 import { SidebarComponent } from "@home/sidebar/sidebar.component";
 import { ActivatedRoute } from "@angular/router";
 import { FindLineRoute } from "@models/interfaces/line-route";
@@ -61,7 +61,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   destination!: L.Marker;
   myLocation!: L.Marker;
   // @ts-ignore
-  searchControl!: SearchControl;
+  searchControl!: GeoSearchControl;
   routingControl!: L.Routing.Control;
   locateControl!: L.Control.Locate;
   sidebarControl!: L.Control.Sidebar;
@@ -187,9 +187,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.assignRoutingControl();
       (this.routingControl as L.Routing.Control).on('routesfound', (e) => {
-        e.routes.forEach((route: any) => {
-          const coordinates = route.coordinates.map((coordinate: any) => [ coordinate.lng, coordinate.lat ]);
-
+        e.routes.forEach((routingResponseI: RoutingResponseI) => {
+          const coordinates = routingResponseI.coordinates.map((coordinate) => [ coordinate.lng, coordinate.lat ]);
+          console.log(coordinates);
         });
       });
       this.map.addControl(this.routingControl);
@@ -293,13 +293,14 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onGeosearchShowLocation(e: L.LeafletEvent) {
+    console.log(e);
     this.destination = (e as any).marker;
     if (this.myLocation) {
       this.showRoutingControl();
     }
   }
 
-  onLocateDeactivate(e: L.LeafletEvent) {
+  onLocateDeactivate(_: L.LeafletEvent) {
     this.myLocation.remove();
     this.myLocation = undefined!;
   }
@@ -339,7 +340,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     this.lineRoutesSelected = [];
     this.mapService.findLineRoutesByName($event).subscribe({
       next: (response) => {
-          const coordinates = response.geom.coordinates.map((coordinate: any) => [ coordinate[ 1 ], coordinate[ 0 ] ]);
+          const coordinates = response.geom.coordinates.map((coordinate) => L.latLng(coordinate[ 1 ], coordinate[ 0 ]));
           this.lineRoutesSelected.push(L.polyline(coordinates, {
             color: '#EE675C',
             weight: 5,

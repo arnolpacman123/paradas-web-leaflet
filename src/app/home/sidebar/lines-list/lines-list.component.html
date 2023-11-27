@@ -14,11 +14,11 @@
 <div class="row" *ngIf="linesNames.length > 0">
   <div
     *ngFor="let line of result"
-    class="col-6 mb-4 mx-0"
+    class="col-6 mb-4 card"
   >
-    <h2 class="list-group-item-heading text-center card-title h4">
+    <h3 class="list-group-item-heading text-center card-title h3 mt-3 mb-1">
       {{ line.name | titlecase }}
-    </h2>
+    </h3>
     <div class="logo-container">
       <img [src]="getImageUrl(line.name!)" alt="Línea {{ line.name }}" height="100%" width="100%"
            class="logo-micro"/>

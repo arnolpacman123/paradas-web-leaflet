@@ -15,7 +15,9 @@
           <i class="fa fa-bus mx-2"></i>
         </h1>
       </div>
+      <div class="px-2">
       <app-lines-list [linesNames]="result" [result]="result" (lineSelected)="_onLineSelected($event)"></app-lines-list>
+      </div>
     </div>
 
     <div class="leaflet-sidebar-pane" id="qr-code">
